@@ -2,8 +2,8 @@ require "colorize"
 
 class Game
   COLORED_PEGS = %i[blue orange green purple yellow pink].freeze
-  RIGHT_COLOR = :red
-  RIGHT_POSITION_AND_COLOR = :white
+  RIGHT_COLOR = :white
+  RIGHT_POSITION_AND_COLOR = :red
 
   attr_reader :secret_code, :name, :feedback
 
