@@ -25,7 +25,7 @@ class Game
 
   def player_input
     chosen_colors = valid_input_check
-    @feedback = []
+    @feedback = [] # reset feedback each attempt
 
     chosen_colors.each_with_index do |color, index|
       if color == @secret_code[index]
@@ -34,7 +34,7 @@ class Game
         feedback << RIGHT_COLOR
       end
     end
-    feedback.empty? ? (puts "No matches found") : (puts @feedback)
+    feedback.empty? ? (puts "No matches found") : (puts feedback)
   end
 
   def valid_input_check
@@ -47,11 +47,11 @@ class Game
   end
 
   def game_over?
-    @feedback == Array.new(4, :white)
+    feedback == Array.new(4, :white)
   end
 
   def display_game_over_message
-    return puts "Congratulations #{@name} you guessed the secret code!" if game_over?
+    return puts "Congratulations #{@player_name} you guessed the secret code!" if game_over?
 
     puts "You lost :("
   end
