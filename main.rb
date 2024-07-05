@@ -14,14 +14,16 @@ class Game
   end
 
   def play
-    10.times do |num|
-      puts "Attempt number #{num + 1}".to_s.colorize(:red)
+    12.times do |num|
+      puts "Attempt number #{num + 1}".colorize(:cyan)
       player_input
 
       break if game_over?
     end
     display_game_over_message
   end
+
+  private
 
   def player_input
     chosen_colors = valid_input_check
@@ -30,7 +32,7 @@ class Game
     chosen_colors.each_with_index do |color, index|
       if color == @secret_code[index]
         feedback << RIGHT_POSITION_AND_COLOR
-      elsif @secret_code.include?(color) && !feedback.include?(RIGHT_POSITION_AND_COLOR)
+      elsif @secret_code.include?(color)
         feedback << RIGHT_COLOR
       end
     end
@@ -39,7 +41,7 @@ class Game
 
   def valid_input_check
     puts "Please pick 4 pegs from [blue, orange, green, purple, yellow, pink]"
-    input = gets.chomp.split.map(&:to_sym)
+    input = gets.chomp.downcase.split.map(&:to_sym)
     return input if input.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && input.length == 4
 
     puts "Invalid #{input}"
@@ -58,5 +60,5 @@ class Game
 end
 
 master = Game.new("Odin")
-puts master.secret_code.to_s.colorize(:magenta)
+puts master.secret_code.to_s.colorize(:black)
 master.play
