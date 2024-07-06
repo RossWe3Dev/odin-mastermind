@@ -2,60 +2,67 @@ require "colorize"
 
 class Game
   COLORED_PEGS = %i[blue orange green purple yellow pink].freeze
-  RIGHT_COLOR = :white
-  RIGHT_POSITION_AND_COLOR = :red
 
-  attr_reader :secret_code, :name, :feedback
+  attr_reader :secret_code, :name
 
   def initialize(name)
     @secret_code = Array.new(4) { COLORED_PEGS.sample }
     @player_name = name
-    @feedback = []
+    @guess = nil
   end
 
   def play
-    12.times do |num|
-      puts "Attempt number #{num + 1}".colorize(:cyan)
-      player_input
+    12.times do |attempt|
+      puts "Attempt number #{attempt + 1}".colorize(:magenta)
+      player_guess
+      display_feedback
 
       break if game_over?
     end
-    display_game_over_message
+    won?
   end
 
   private
 
-  def player_input
-    chosen_colors = valid_input_check
-    @feedback = [] # reset feedback each attempt
+  def player_guess
+    loop do
+      puts "Please pick 4 colors from [blue, orange, green, purple, yellow, pink]".colorize(:green)
+      @guess = gets.chomp.downcase.split.map(&:to_sym)
+      return @guess if @guess.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && @guess.length == 4
 
-    chosen_colors.each_with_index do |color, index|
-      if color == @secret_code[index]
-        feedback << RIGHT_POSITION_AND_COLOR
-      elsif @secret_code.include?(color)
-        feedback << RIGHT_COLOR
-      end
+      puts "Invalid guess".colorize(:red)
     end
-    feedback.empty? ? (puts "No matches found") : (puts feedback)
   end
 
-  def valid_input_check
-    puts "Please pick 4 pegs from [blue, orange, green, purple, yellow, pink]"
-    input = gets.chomp.downcase.split.map(&:to_sym)
-    return input if input.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && input.length == 4
+  def display_feedback
+    white_pegs = (0...4).count { |i| @guess[i] == @secret_code[i] }
 
-    puts "Invalid #{input}"
-    valid_input_check
+    red_pegs = [(matches_count - white_pegs), 0].max
+
+    print "#{white_pegs} white pegs (correct color and position),".colorize(:white)
+    puts " #{red_pegs} red pegs (only correct color)".colorize(:red)
+    @guess
+  end
+
+  def matches_count
+    all_matches = 0
+    @secret_code.each do |secret_peg|
+      all_matches += 1 if @guess.any? { |guess_peg| guess_peg == secret_peg }
+    end
+    all_matches
   end
 
   def game_over?
-    feedback == Array.new(4, :white)
+    @guess == @secret_code
   end
 
-  def display_game_over_message
-    return puts "Congratulations #{@player_name} you guessed the secret code!" if game_over?
-
-    puts "You lost :("
+  def won?
+    if game_over?
+      puts "Congratulations! You cracked the code!".colorize(:green)
+    else
+      puts "You ran out of turns and lost :(".colorize(:red)
+      puts "The code was: #{@secret_code.join(', ')}"
+    end
   end
 end
 
