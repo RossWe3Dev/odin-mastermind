@@ -6,16 +6,25 @@ class Game
   include Apply_color
   COLORED_PEGS = %i[blue purple pink orange yellow green].freeze
 
-  attr_reader :secret_code, :name
+  attr_reader :secret_code, :name, :role
 
-  def initialize(name)
-    @secret_code = Array.new(4) { COLORED_PEGS.sample }
-    @player_name = name
+  def initialize(role)
+    @role = role
+    @secret_code = nil
+    puts "Hi gamer! What's your name?".colorize(:light_magenta)
+    @player_name = gets.chomp.capitalize
     @guess = nil
   end
 
   def play
-    puts "Hello #{@player_name}, you have 12 attempts to crack the code, good luck :)".colorize(:light_magenta)
+    play_as_guesser if role == :guesser
+    play_as_creator if role == :creator
+  end
+
+  def play_as_guesser
+    generate_random_code
+    puts "You have 12 attempts to crack the code, good luck #{@player_name}!".colorize(:light_magenta)
+
     12.times do |attempt|
       puts "Attempt number #{attempt + 1}".colorize(:cyan)
       player_guess
@@ -26,15 +35,36 @@ class Game
     won?
   end
 
+  def play_as_creator
+    create_secret_code
+    puts "Yay your code is #{colorize_pegs(@secret_code).join(' ')}"
+  end
+
+  def generate_random_code
+    @secret_code = Array.new(4) { COLORED_PEGS.sample }
+  end
+
+  def create_secret_code
+    loop do
+      puts "Create a 4 pegs code with these available colors = [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
+      @secret_code = gets.chomp.downcase.split.map(&:to_sym)
+      if @secret_code.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && @secret_code.length == 4
+        return @secret_code
+      end
+
+      puts "Invalid code, please only write the color names with blank spaces in between".colorize(:red)
+    end
+  end
+
   private
 
   def player_guess
     loop do
-      puts "Please pick 4 colors from [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
+      puts "Pick 4 colors from [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
       @guess = gets.chomp.downcase.split.map(&:to_sym)
       return @guess if @guess.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && @guess.length == 4
 
-      puts "Invalid guess".colorize(:red)
+      puts "Invalid guess, please only write the color names with blank spaces in between".colorize(:red)
     end
   end
 
