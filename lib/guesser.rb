@@ -8,7 +8,7 @@ class Guesser < GameLogic
     12.times do |attempt|
       puts "Attempt number #{attempt + 1}".colorize(:cyan)
       player_guess
-      matches = count_matches(@guess)
+      matches = count_matches
       display_feedback(matches)
 
       break if game_over?

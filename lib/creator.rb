@@ -1,6 +1,13 @@
 require "colorize"
 
 class Creator < GameLogic
+  attr_accessor :matched_colors
+
+  def initialize(name, role)
+    super
+    @matched_colors = []
+  end
+
   def play_as_creator
     create_secret_code
     puts "Your code is #{colorize_pegs(@secret_code).join(' ')}, let's see if the computer can crack it!"
@@ -12,7 +19,7 @@ class Creator < GameLogic
     while computer_turn && computer_guesses.length < 12
       puts "Attempt #{computer_guesses.length + 1}".colorize(:cyan)
       computer_guess
-      matches = count_matches(@guess)
+      matches = count_matches
       display_feedback(matches)
 
       computer_guesses << @guess # Add guess to history (optional)

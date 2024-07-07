@@ -12,27 +12,33 @@ class GameLogic
     @secret_code = nil
     @name = name
     @guess = nil
-    @matches = []
+    # @matches = []
     @role = role
   end
 
   protected
 
-  def count_matches(guess)
-    exact_matches = 0
-    color_matches = 0
-
-    (0...4).each do |i|
-      if guess[i] == @secret_code[i]
-        exact_matches += 1
-        next
-      end
-
-      index = @secret_code.index(guess[i])
-      color_matches += 1 if index && index != i
-    end
+  def count_matches
+    exact_matches = (0...4).count { |i| @guess[i] == @secret_code[i] }
+    color_matches = [(all_matches - exact_matches), 0].max
 
     { exact_matches: exact_matches, color_matches: color_matches }
+  end
+
+  def all_matches
+    all_matches = 0
+    guess_copy = @guess.dup
+
+    @secret_code.each do |secret_peg|
+      # Find the index of matching peg, if none (nil) skip to the next iteration
+      index = guess_copy.index(secret_peg)
+      next unless index
+
+      all_matches += 1
+      # Remove the matched peg from the guess copy to avoid overcounting
+      guess_copy.delete_at(index)
+    end
+    all_matches
   end
 
   def display_feedback(matches)
