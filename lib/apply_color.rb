@@ -1,4 +1,4 @@
-module Apply_color
+module ApplyColor
   COLOR_MAP = {
     blue: :blue,
     green: :light_green,
