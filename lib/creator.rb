@@ -1,11 +1,12 @@
 require "colorize"
 
 class Creator < GameLogic
-  attr_accessor :matched_colors
+  attr_accessor :current_guess, :matches_info
 
   def initialize(name, role)
     super
-    @matched_colors = []
+    @current_guess = []
+    @matches_info = nil
   end
 
   def play_as_creator
@@ -13,22 +14,37 @@ class Creator < GameLogic
     puts "Your code is #{colorize_pegs(@secret_code).join(' ')}, let's see if the computer can crack it!"
     sleep(1)
 
-    computer_guesses = []
-    computer_turn = true
-
-    while computer_turn && computer_guesses.length < 12
-      puts "Attempt #{computer_guesses.length + 1}".colorize(:cyan)
+    12.times do |attempt|
+      puts "Attempt number #{attempt + 1}".colorize(:cyan)
       computer_guess
       matches = count_matches
       display_feedback(matches)
 
-      computer_guesses << @guess # Add guess to history (optional)
-      # Store one color from guess, give basic logic to computer
-      @matched_colors = Array.new(matches[:exact_matches]) { @guess[0] }
+      # Store current guess symbols and all matches
+      @current_guess = @guess
+      @matches_info = all_matches
 
-      computer_turn = !game_over?
       sleep(0.5)
+      break if game_over?
     end
+
+    # computer_guesses = []  # might keep this approach if I want to use guesses history
+    # computer_turn = true
+    # while computer_turn && computer_guesses.length < 12
+    #   puts "Attempt #{computer_guesses.length + 1}".colorize(:cyan)
+    #   computer_guess
+    #   matches = count_matches
+    #   display_feedback(matches)
+
+    #   computer_guesses << @guess # Add guess to history (optional)
+    #   # Store current guess symbols and all matches
+    #   @current_guess = @guess
+    #   @matches_info = all_matches
+
+    #   computer_turn = !game_over?
+    #   sleep(0.5)
+    # end
+
     computer_won?
   end
 
@@ -49,12 +65,13 @@ class Creator < GameLogic
   end
 
   def computer_guess
-    if @matched_colors && !@matched_colors.empty?
-      guess = @matched_colors.dup.shuffle
+    guess = []
+    if @current_guess.empty? # First iteration
+      guess = Array.new(4) { COLORED_PEGS.sample }
+    else
+      guess += @current_guess.sample(@matches_info)
       # Fill remaining guess slots with random colors
       guess += COLORED_PEGS.sample(4 - guess.length)
-    else
-      guess = Array.new(4) { COLORED_PEGS.sample }
     end
     @guess = guess
   end
