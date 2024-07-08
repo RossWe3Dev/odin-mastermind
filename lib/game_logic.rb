@@ -6,7 +6,8 @@ class GameLogic
   include ApplyColor
   COLORED_PEGS = %i[blue purple pink orange yellow green].freeze
 
-  attr_reader :secret_code, :name, :guess, :role
+  attr_accessor :guess
+  attr_reader :secret_code, :name, :role
 
   def initialize(name, role)
     @secret_code = nil

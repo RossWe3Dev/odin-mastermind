@@ -1,12 +1,14 @@
 require "colorize"
 
 class Creator < GameLogic
-  attr_accessor :current_guess, :matches_info
+  attr_accessor :last_guess, :matches_info, :possible_colors, :unused_colors
 
   def initialize(name, role)
     super
-    @current_guess = []
+    @last_guess = nil
     @matches_info = nil
+    @possible_colors = COLORED_PEGS.dup
+    @unused_colors = COLORED_PEGS.dup
   end
 
   def play_as_creator
@@ -20,31 +22,14 @@ class Creator < GameLogic
       matches = count_matches
       display_feedback(matches)
 
-      # Store current guess symbols and all matches
-      @current_guess = @guess
+      # Store last guess symbols and matches info
+      @last_guess = @guess
+      # @matches_info = matches
       @matches_info = all_matches
 
       sleep(0.5)
       break if game_over?
     end
-
-    # computer_guesses = []  # might keep this approach if I want to use guesses history
-    # computer_turn = true
-    # while computer_turn && computer_guesses.length < 12
-    #   puts "Attempt #{computer_guesses.length + 1}".colorize(:cyan)
-    #   computer_guess
-    #   matches = count_matches
-    #   display_feedback(matches)
-
-    #   computer_guesses << @guess # Add guess to history (optional)
-    #   # Store current guess symbols and all matches
-    #   @current_guess = @guess
-    #   @matches_info = all_matches
-
-    #   computer_turn = !game_over?
-    #   sleep(0.5)
-    # end
-
     computer_won?
   end
 
@@ -65,15 +50,29 @@ class Creator < GameLogic
   end
 
   def computer_guess
-    guess = []
-    if @current_guess.empty? # First iteration
-      guess = Array.new(4) { COLORED_PEGS.sample }
+    current_guess = []
+    if !@last_guess # First iteration
+      current_guess = Array.new(4) { @possible_colors.sample }
+    elsif @last_guess && @matches_info.zero?
+      @possible_colors -= @last_guess
+      current_guess = Array.new(4) { @possible_colors.sample }
     else
-      guess += @current_guess.sample(@matches_info)
-      # Fill remaining guess slots with random colors
-      guess += COLORED_PEGS.sample(4 - guess.length)
+      current_guess = computer_logic(current_guess)
     end
-    @guess = guess
+    # Update unused_colors
+    @unused_colors -= current_guess
+
+    @guess = current_guess
+  end
+
+  def computer_logic(current_guess)
+    current_guess += @last_guess.sample(@matches_info)
+    # Prioritize unused colors
+    current_guess += @unused_colors.sample(4 - current_guess.length) unless @unused_colors.empty?
+    # Fallback to possible colors
+    current_guess += @possible_colors.sample(4 - current_guess.length)
+
+    current_guess
   end
 
   def computer_won?
