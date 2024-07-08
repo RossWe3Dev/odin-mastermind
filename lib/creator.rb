@@ -37,7 +37,8 @@ class Creator < GameLogic
   def create_secret_code
     loop do
       puts "This are the available colors = [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
-      puts "Now #{@name}, create a code with 4 color names (can contain duplicates)."
+      puts "Now #{@name}, create a code with 4 color names (can contain duplicates).".colorize(:cyan)
+
       @secret_code = gets.chomp.downcase.split.map(&:to_sym)
       if @secret_code.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && @secret_code.length == 4
         return @secret_code
@@ -60,9 +61,9 @@ class Creator < GameLogic
 
   def computer_won?
     if game_over?
-      puts "The computer cracked the code!"
+      puts "You lost, the computer cracked the code!".colorize(:cyan)
     else
-      puts "Congratulations #{@name}, your code was so hard the computer couldn't crack it!"
+      puts "Congratulations #{@name}, your code was so hard the computer couldn't crack it!".colorize(:cyan)
     end
   end
 end

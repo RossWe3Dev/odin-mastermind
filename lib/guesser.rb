@@ -2,7 +2,7 @@ require "colorize"
 
 class Guesser < GameLogic
   def play_as_guesser
-    generate_random_code # Moved to Guesser class
+    generate_random_code
     puts "You have 12 attempts to crack the code, good luck #{@name}!".colorize(:light_magenta)
 
     12.times do |attempt|
@@ -26,6 +26,7 @@ class Guesser < GameLogic
   def player_guess
     loop do
       puts "Pick 4 colors from [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
+
       @guess = gets.chomp.downcase.split.map(&:to_sym)
       return if @guess.all? { |chosen_pegs| COLORED_PEGS.include?(chosen_pegs) } && @guess.length == 4
 

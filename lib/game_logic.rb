@@ -12,7 +12,6 @@ class GameLogic
     @secret_code = nil
     @name = name
     @guess = nil
-    # @matches = []
     @role = role
   end
 

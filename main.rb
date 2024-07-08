@@ -29,15 +29,15 @@ def choose_role
 end
 
 def play_again?(name)
-  puts "Press 'y' to play again :) [y/quit]"
+  puts "Press 'y' to play again :) [y/quit]".colorize(:cyan)
   if gets.chomp.downcase == "y"
     mastermind(name)
   else
-    puts "Thanks for playing!"
+    puts "Thanks for playing!".colorize(:cyan)
   end
 end
 
-puts "Hi gamer! What's your name?"
+puts "Hi gamer! What's your name?".colorize(:cyan)
 name = gets.chomp.capitalize
 
 mastermind(name)
