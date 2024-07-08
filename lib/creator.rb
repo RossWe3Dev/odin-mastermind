@@ -16,20 +16,7 @@ class Creator < GameLogic
     puts "Your code is #{colorize_pegs(@secret_code).join(' ')}, let's see if the computer can crack it!"
     sleep(1)
 
-    12.times do |attempt|
-      puts "Attempt number #{attempt + 1}".colorize(:cyan)
-      computer_guess
-      matches = count_matches
-      display_feedback(matches)
-
-      # Store last guess symbols and matches info
-      @last_guess = @guess
-      # @matches_info = matches
-      @matches_info = all_matches
-
-      sleep(0.5)
-      break if game_over?
-    end
+    computer_loop
     computer_won?
   end
 
@@ -46,6 +33,23 @@ class Creator < GameLogic
       end
 
       puts "Invalid code, please only write the color names with blank spaces in between".colorize(:red)
+    end
+  end
+
+  def computer_loop
+    12.times do |attempt|
+      puts "Attempt number #{attempt + 1}".colorize(:cyan)
+      computer_guess
+      matches = count_matches
+      display_feedback(matches)
+
+      # Store last guess symbols and matches info
+      @last_guess = @guess
+      # @matches_info = matches
+      @matches_info = all_matches
+
+      sleep(0.3)
+      break if game_over?
     end
   end
 
