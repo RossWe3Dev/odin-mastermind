@@ -20,7 +20,7 @@ class Guesser < GameLogic
 
   def generate_random_code
     @secret_code = Array.new(4) { COLORED_PEGS.sample }
-    puts @secret_code.to_s.colorize(:black) # will hide it later
+    # puts @secret_code.to_s.colorize(:black) # toggle comment to test
   end
 
   def player_guess
