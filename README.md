@@ -13,4 +13,4 @@ The feedback consists of white pegs (exact color and position) and red pegs (cor
 
 When asked to input a combination of colors the player has to write the color names white only blank spaces in between.
 
-Made by RossWe3Dev, view on [Replit](https://replit.com/@RossWe3dev/RossWe3dev-Mastermind?v=1#README.md)
+Made by RossWe3Dev, view on [Replit](https://replit.com/@RossWe3dev/RossWe3dev-Mastermind)
