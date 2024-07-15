@@ -12,3 +12,5 @@ After each guess the game displays a feedback.
 The feedback consists of white pegs (exact color and position) and red pegs (correct color but incorrect position).
 
 When asked to input a combination of colors the player has to write the color names white only blank spaces in between.
+
+Made by RossWe3Dev, vie on [Replit](https://replit.com/@RossWe3dev/RossWe3dev-Mastermind?v=1#README.md)
