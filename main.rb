@@ -3,6 +3,7 @@ require "colorize"
 require_relative "lib/apply_color"
 require_relative "lib/game_logic"
 require_relative "lib/guesser"
+require_relative "lib/computer_logic"
 require_relative "lib/creator"
 
 def mastermind(name)
