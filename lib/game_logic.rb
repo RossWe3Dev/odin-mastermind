@@ -42,7 +42,7 @@ class GameLogic
   end
 
   def display_feedback(matches)
-    puts "#{@name}'s guess: #{colorize_pegs(@guess).join(' ')}" if role == :guesser
+    puts "\n#{@name}'s guess: #{colorize_pegs(@guess).join(' ')}" if role == :guesser
     puts "Computer's guess: #{colorize_pegs(@guess).join(' ')}" if role == :creator
     print "#{matches[:exact_matches]} red pegs (correct color and position),".colorize(:red)
     puts " #{matches[:color_matches]} white pegs (only correct color)"

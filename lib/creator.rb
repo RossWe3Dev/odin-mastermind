@@ -1,7 +1,7 @@
 require "colorize"
 
 class Creator < GameLogic
-  attr_accessor :last_guess, :matches_info, :possible_colors, :unused_colors
+  attr_accessor :last_guess, :matches_info, :possible_colors, :unused_colors, :guesses_history
 
   def initialize(name, role)
     super
@@ -9,11 +9,12 @@ class Creator < GameLogic
     @matches_info = nil
     @possible_colors = COLORED_PEGS.dup
     @unused_colors = COLORED_PEGS.dup
+    @guesses_history = []
   end
 
   def play_as_creator
     create_secret_code
-    puts "Your code is #{colorize_pegs(@secret_code).join(' ')}, let's see if the computer can crack it!"
+    puts "\nYour code is #{colorize_pegs(@secret_code).join(' ')}, let's see if the computer can crack it!"
     sleep(1)
 
     computer_loop
@@ -24,7 +25,7 @@ class Creator < GameLogic
 
   def create_secret_code
     loop do
-      puts "This are the available colors = [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
+      puts "\nThis are the available colors = [#{colorize_pegs(COLORED_PEGS).join(' ')}]"
       puts "Now #{@name}, create a code with 4 color names (can contain duplicates).".colorize(:cyan)
 
       @secret_code = gets.chomp.downcase.split.map(&:to_sym)
@@ -37,18 +38,15 @@ class Creator < GameLogic
   end
 
   def computer_loop
-    12.times do |attempt|
+    20.times do |attempt|
+      puts "\nCalculating...".colorize(:light_magenta)
       puts "Attempt number #{attempt + 1}".colorize(:cyan)
+
       computer_guess
       matches = count_matches
       display_feedback(matches)
+      store_guesses_history
 
-      # Store last guess symbols and matches info
-      @last_guess = @guess
-      # @matches_info = matches
-      @matches_info = all_matches
-
-      sleep(0.3)
       break if game_over?
     end
   end
@@ -70,20 +68,31 @@ class Creator < GameLogic
   end
 
   def computer_logic(current_guess)
-    current_guess += @last_guess.sample(@matches_info)
-    # Prioritize unused colors
-    current_guess += @unused_colors.sample(4 - current_guess.length) unless @unused_colors.empty?
-    # Fallback to possible colors
-    current_guess += @possible_colors.sample(4 - current_guess.length)
+    loop do
+      current_guess += @last_guess.sample(@matches_info)
+      # Prioritize unused colors
+      current_guess += @unused_colors.sample(4 - current_guess.length) unless @unused_colors.empty?
+      # Fallback to possible colors
+      current_guess += @possible_colors.sample(4 - current_guess.length)
+      return current_guess unless @guesses_history.include?(current_guess)
 
-    current_guess
+      # Clear before next itaration to avoid negative samples
+      current_guess.clear
+    end
+  end
+
+  def store_guesses_history
+    @last_guess = @guess
+    @matches_info = all_matches
+    @guesses_history << @guess
+    sleep(0.5)
   end
 
   def computer_won?
     if game_over?
-      puts "You lost, the computer cracked the code!".colorize(:cyan)
+      puts "\nYou lost, the computer cracked the code!".colorize(:cyan)
     else
-      puts "Congratulations #{@name}, your code was so hard the computer couldn't crack it!".colorize(:cyan)
+      puts "\nCongratulations #{@name}, your code was so hard the computer couldn't crack it!".colorize(:cyan)
     end
   end
 end

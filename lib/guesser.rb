@@ -6,7 +6,8 @@ class Guesser < GameLogic
     puts "You have 12 attempts to crack the code, good luck #{@name}!".colorize(:light_magenta)
 
     12.times do |attempt|
-      puts "Attempt number #{attempt + 1}".colorize(:cyan)
+      puts "\nAttempt number #{attempt + 1}".colorize(:cyan)
+
       player_guess
       matches = count_matches
       display_feedback(matches)
@@ -36,9 +37,9 @@ class Guesser < GameLogic
 
   def player_won?
     if game_over?
-      puts "Congratulations #{@name}! You cracked the code!".colorize(:green)
+      puts "\nCongratulations #{@name}! You cracked the code!".colorize(:green)
     else
-      puts "You ran out of turns and lost :(".colorize(:red)
+      puts "\nYou ran out of turns and lost :(".colorize(:red)
       puts "The code was: #{colorize_pegs(@secret_code).join(' ')}"
     end
   end

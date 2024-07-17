@@ -18,7 +18,7 @@ def mastermind(name)
 end
 
 def choose_role
-  puts "Would you like to be the (G)uesser or the (C)reator?".colorize(:cyan)
+  puts "\nWould you like to be the (G)uesser or the (C)reator?".colorize(:cyan)
   loop do
     choice = gets.chomp.upcase
     return :guesser if choice == "G"
