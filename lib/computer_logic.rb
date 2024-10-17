@@ -15,7 +15,7 @@ class ComputerLogic < GameLogic
   protected
 
   def computer_loop
-    20.times do |attempt|
+    12.times do |attempt|
       puts "\nCalculating...".colorize(:light_magenta)
       puts "Attempt number #{attempt + 1}".colorize(:cyan)
 
@@ -28,7 +28,7 @@ class ComputerLogic < GameLogic
     end
   end
 
-  def computer_guess
+  def computer_guess # rubocop:disable Metrics/MethodLength
     current_guess = []
     if !@last_guess # First iteration
       current_guess = Array.new(4) { @possible_colors.sample }
@@ -53,7 +53,7 @@ class ComputerLogic < GameLogic
       current_guess += @possible_colors.sample(4 - current_guess.length)
       return current_guess unless @guesses_history.include?(current_guess)
 
-      # Clear before next itaration to avoid negative samples
+      # Clear before next iteration to avoid negative samples
       current_guess.clear
     end
   end
